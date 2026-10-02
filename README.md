@@ -1,8 +1,8 @@
 # RenderProbe
 
-**Decomposing why an Vision Language Model fails**
+**Decomposing why a Vision Language Model fails**
 
-RenderProbe lets users render scenes with computeable ground truth, and then separates VLM failures into three categories to determine: 
+RenderProbe lets users render scenes with computable ground truth, and then separates VLM failures into three categories to determine: 
 if the model could not *see* the fact, could not *use* the fact, or could not *reason* with it even when handed the perceptual facts.
 
 ![The Run tab: pick a scene, shape it, and see exactly what the model will be shown](docs/images/ui_hero.png)
@@ -17,7 +17,7 @@ sent. Nothing is called until you press Run.
 ![Three-way decomposition on two scenes](docs/images/decomposition.png)
 
 On the road map, gemma-3-27b reads the numbers off the picture five times out of six
-(`report` 0.83) and then fails to route on them (`full` 0.33). Even after suceeding at the perception stage, it it is failing at the downstream task. However, on the polycube task, it is unable to recover the target's shape (`report` 0.00), and no amount of reasoning can  rescue a misread fact.
+(`report` 0.83) and then fails to route on them (`full` 0.33). Even after succeeding at the perception stage, it is failing at the downstream task. However, on the polycube task, it is unable to recover the target's shape (`report` 0.00), and no amount of reasoning can rescue a misread fact.
 
 These are different problems with different fixes, and a single accuracy benchmark cannot tell them apart.
 
@@ -44,7 +44,7 @@ is to read; `n_hops` sets how long the cheapest route is. Above, the map stays e
 </table>
 
 **route** is a weighted planar graph drawn as a road map. The answer is an integer, so
-guessing is worth about 5% rather than the 50% at a yes/no question. Every map incldes variance, such that the cheapest road leaving the start town is *not* the first road of the answer, which is what stops a model walking greedily and never comparing whole
+guessing is worth about 5% rather than the 50% at a yes/no question. Every map includes variance, such that the cheapest road leaving the start town is *not* the first road of the answer, which is what stops a model walking greedily and never comparing whole
 routes. On the map above, the cheap-looking `H-C` road (4) leads into a detour costing 49
 against a true answer of 24. Roads never cross, because an intersection comes across as genuinely ambiguous
 in a picture.
@@ -52,11 +52,11 @@ in a picture.
 **polycube** partitions a 3x3x3 cube into interlocking pieces, then shows one of them
 again on its own, rotated and in neutral gray. Counting cubes and comparing bounding
 boxes are both ruled out by construction: across 24 seeds, neither measurement, nor both
-together, identifies the coorect answer.
+together, identifies the correct answer.
 
 Both are generated procedurally. 
 
-A third scene, `gear_train`, lives outside the package as the worked extensibility example, to show the users how to onramp their own scenes in into the framework. It
+A third scene, `gear_train`, lives outside the package as the worked extensibility example, to show the users how to onramp their own scenes into the framework. It
 is calibrated the same way and is the subject of [`docs/on_ramp.md`](docs/on_ramp.md).
 
 ---

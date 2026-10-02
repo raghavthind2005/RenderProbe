@@ -1,6 +1,6 @@
 # Adding your own scene
 
-This is a tutorial on how to include your own scene onto the RenderProbe framewor, and includes two points where it was wrong and had to change. The finished code is
+This is a tutorial on how to include your own scene onto the RenderProbe framework, and includes two points where it was wrong and had to change. The finished code is
 [`examples/gear_train.py`](../examples/gear_train.py), just over 300 lines.
 
 In short, you need to:
