@@ -1,0 +1,33 @@
+experiment: route
+# Shortest route over a weighted road map. Towns are lettered circles, roads carry their
+# length, and the question asks for the total length of the cheapest route between two
+# marked towns. The answer is an integer, so guessing is worth about 5% rather than the
+# 50% a yes/no question hands over.
+#
+# The two difficulties are on separate knobs, which is what polycube lacked:
+#   n_towns  how hard the map is to READ
+#   n_hops   how hard the route is to WORK OUT
+# Sweeping n_hops therefore moves reasoning load with perception load held still.
+#
+# Every map is built so the cheapest road out of the start town is NOT the first road of
+# the cheapest route, so a model cannot answer by walking greedily.
+#
+# Needs NVIDIA_API_KEY and OPENROUTER_API_KEY. Calibrated 2026-09-20 at n_towns 8,
+# n_hops 3: gemma-3-27b 2/6 against a 0.05 chance level (MEASURABLE),
+# llama-3.2-11b 0/6 (AT FLOOR). See tools/calibrate.py.
+scene:
+  generator: route
+  params:
+    n_towns: 8
+    n_hops: [2, 3, 4]        # varying factor -> enables sweep_curve
+  seeds: [0, 1, 2, 3, 4, 5]
+probe: route
+models:
+  - gemma-3-27b-or
+  - llama-3.2-11b-vision-nv
+analysis:
+  - accuracy
+  - decomposition
+  - oracle
+  - sweep_curve
+  - taxonomy

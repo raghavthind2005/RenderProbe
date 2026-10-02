@@ -1,0 +1,38 @@
+experiment: gear_train
+# Compound gear train, loaded from outside the package. See docs/on_ramp.md for how this
+# scene was built, gated and tuned; it is the worked example for adding your own.
+#
+# Two gears on one shaft are bolted together, so the stage ratios multiply instead of
+# telescoping and the familiar first-over-last shortcut gives a specific wrong number.
+#
+#   n_stages  the reasoning knob: meshes between shafts, each contributing a ratio.
+#
+# CALIBRATED 2026-09-20 with tools/calibrate.py against gemma-3-27b:
+#   n_stages 1  plain train, one division          -> AT CEILING (6/6)
+#   n_stages 2  one compound shaft                 -> MEASURABLE (2/6, chance 0.08)
+#   n_stages 3  two compound shafts                -> AT FLOOR (1/6)
+# So 2 is the band worth running, and 1 and 3 are kept only to show the knob moving.
+plugin_dirs:
+  - examples
+scene:
+  generator: gear_train
+  params:
+    n_stages: [1, 2, 3]      # varying factor -> enables sweep_curve
+  seeds: [0, 1, 2, 3, 4, 5]
+probe: gear_train
+models:
+  - gemma-3-27b-or
+  - llama-3.2-11b-vision-nv
+analysis:
+  - accuracy
+  - decomposition
+  - oracle
+  - sweep_curve
+  - taxonomy
+
+# Off on purpose, and what each would cost if you turned it on:
+#   blind: true              also asks every question with no image, for the Visual gain
+#                            tab. Doubles the number of calls.
+#   elicit_confidence: true  appends a confidence request to every prompt, for the
+#                            Calibration tab. Changes what the model was asked.
+# With both on, add `visual_gain` and `calibration` to `analysis` above.

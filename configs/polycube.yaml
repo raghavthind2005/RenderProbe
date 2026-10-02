@@ -1,0 +1,35 @@
+experiment: polycube
+# 3D mental rotation over interlocking polycube pieces. A cube is partitioned into
+# n_pieces pieces; one is shown again on its own, rotated and in neutral gray, and the
+# model says which colored candidate it is.
+#
+# Sweeping n_pieces raises both the chance floor (1/K) and how many near-identical
+# shapes have to be told apart. Counting cubes and comparing bounding boxes are both
+# ruled out by construction, so the shape has to settle it (docs/methodology.md).
+#
+# Needs NVIDIA_API_KEY (build.nvidia.com) and OPENROUTER_API_KEY. A model whose key is
+# unset is sandboxed into model_error Results and drops out of analysis.
+#
+# The roster was re-probed 2026-09-20: these two are what still serve. llama-3.2-90b is
+# still listed in NVIDIA's catalog but times out at 180 s even on a text-only request,
+# so it is unavailable rather than slow (see models/openai_compatible.py).
+#
+# COST: this scene renders in true 3D. spp 256 takes about 13 s a scene and is visually
+# clean; drop to the renderer default of 64 while iterating. Images are rendered once
+# per scene and reused across every model and condition.
+scene:
+  generator: polycube
+  params:
+    n_pieces: [4, 5, 6]      # varying factor -> enables sweep_curve
+    renderer_opts:
+      spp: 256
+  seeds: [0, 1, 2, 3, 4, 5]
+probe: polycube
+models:
+  - llama-3.2-11b-vision-nv
+  - gemma-3-27b-or
+analysis:
+  - accuracy
+  - decomposition          # three-way bottleneck, with its stability
+  - oracle                 # paired statistics behind `recovery`
+  - sweep_curve            # accuracy vs n_pieces, with bootstrap CIs

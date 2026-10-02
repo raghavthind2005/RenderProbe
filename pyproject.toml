@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]   # >=77 for PEP 639 SPDX license metadata
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "renderprobe"
+version = "0.1.0"
+description = "Render scenes with known ground truth, probe a VLM, and localize whether it failed at encoding, grounding, or reasoning."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Raghav Thind", email = "raghav.thind@gmail.com" }]
+keywords = ["vision-language-models", "evaluation", "interpretability", "benchmark", "rendering"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+dependencies = [
+    "pydantic>=2.0",
+    "pillow>=10.0",
+    "numpy>=1.26",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov", "ruff"]
+models = ["openai>=1.0", "google-generativeai>=0.8"]
+hf = ["transformers>=4.45", "torch>=2.2", "accelerate>=0.30"]
+ui = ["gradio>=4.0", "matplotlib>=3.7"]
+# Optional photorealistic 3D renderers. Two honest tiers, both beyond the zero-dependency
+# pil_2d / pil_25d:
+#   render3d-cpu -> mitsuba_3d, a headless CPU path tracer (no OpenGL/GPU/Metal), the
+#                   portable true-3D on-ramp, works on Apple Silicon and any headless box.
+#   render3d     -> pyrender_3d, GPU/OpenGL rasterizer, needs a working GL/EGL/OSMesa
+#                   backend at runtime, for machines that have one.
+render3d-cpu = ["mitsuba>=3.9"]
+render3d = ["pyrender>=0.1.45", "trimesh>=4.0"]
+
+[project.scripts]
+renderprobe = "renderprobe.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/raghavthind2005/RenderProbe"
+Repository = "https://github.com/raghavthind2005/RenderProbe"
+Methodology = "https://github.com/raghavthind2005/RenderProbe/blob/main/docs/methodology.md"
+Issues = "https://github.com/raghavthind2005/RenderProbe/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
